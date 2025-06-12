@@ -1,5 +1,6 @@
 package com.nexusforge.OSMS.Controller;
 
+import com.nexusforge.OSMS.Entity.Result;
 import com.nexusforge.OSMS.Mgr.userAuthMgr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,10 @@ public class serviceAuth {
     private userAuthMgr userAuthMgr;
 
     @PostMapping("/forgotPassword")
-    public ResponseEntity<?> sendResetEmail(@RequestBody Map<String , String> body){
+    public Result sendResetEmail(@RequestBody Map<String , String> body){
+        Result res = new Result();
         String email = body.get("email");
-        userAuthMgr.sendResetEmail(email);
-        return ResponseEntity.ok().body("Send Email Successfully to " + email);
+        res = userAuthMgr.sendResetEmail(email);
+        return res;
     }
 }

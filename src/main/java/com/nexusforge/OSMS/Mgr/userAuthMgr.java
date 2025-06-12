@@ -1,5 +1,6 @@
 package com.nexusforge.OSMS.Mgr;
 
+import com.nexusforge.OSMS.Entity.Result;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,11 @@ public class userAuthMgr {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendResetEmail(String email){
+    public Result sendResetEmail(String email){
+        Result res = new Result();
         String code = generateRandomCode();
-        sendEmail(email , code);
+        res = sendEmail(email , code);
+        return res;
     }
 
     private void sendEmail1(String userEmail , String resetCode){
@@ -36,7 +39,8 @@ public class userAuthMgr {
         mailSender.send(msg);
     }
 
-    private void sendEmail(String userEmail, String resetCode) {
+    private Result sendEmail(String userEmail, String resetCode) {
+        Result res = new Result();
         String userName = userEmail.split("@")[0];
 
         try {
@@ -51,11 +55,16 @@ public class userAuthMgr {
             helper.setTo(userEmail);
             helper.setSubject("🔒 Password Reset Code - OSMS");
             helper.setText(htmlContent, true);
-
             mailSender.send(message);
+
+            res.setState(true);
+            res.setMsgDesc("Password Reset Mail Sent Successfully to " + userEmail);
+            res.setMsgCode("200");
         } catch (MessagingException | IOException e) {
             e.printStackTrace();
+            res.setState(false);
         }
+        return res;
     }
 
     private String loadTemplate(String path) throws IOException {
