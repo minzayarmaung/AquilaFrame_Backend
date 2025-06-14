@@ -41,7 +41,6 @@ public class userAuthMgr {
     @Transactional
     public Result verifyLoginUser(String email, String password) {
         Result res = new Result();
-
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
         if (optionalUser.isEmpty()) {
@@ -72,8 +71,11 @@ public class userAuthMgr {
         String code = serverUtil.generateRandomCode();
 
         LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(15);
+
+        // Delete old tokens
         passwordResetTokenRepository.deleteByEmail(email);
 
+        // Save new token
         PasswordResetToken resetToken = new PasswordResetToken(email , code , expiryTime);
         passwordResetTokenRepository.save(resetToken);
 
