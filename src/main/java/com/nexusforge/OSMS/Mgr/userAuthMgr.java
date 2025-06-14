@@ -1,79 +1,129 @@
 package com.nexusforge.OSMS.Mgr;
 
+import com.nexusforge.OSMS.Dao.userAuthDao;
+import com.nexusforge.OSMS.Entity.PasswordResetToken;
 import com.nexusforge.OSMS.Entity.Result;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
+import com.nexusforge.OSMS.Entity.User;
+import com.nexusforge.OSMS.Repository.PasswordResetTokenRepository;
+import com.nexusforge.OSMS.Repository.UserRepository;
+import com.nexusforge.OSMS.Util.passwordEncoder;
+import com.nexusforge.OSMS.Util.serverUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class userAuthMgr {
 
     @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private serverUtil serverUtil;
+
+    @Autowired
+    private userAuthDao userAuthDao;
+
+    @Autowired
+    private passwordEncoder passwordEncoder;
+
+
+    @Transactional
+    public Result verifyLoginUser(String email, String password) {
+        Result res = new Result();
+
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+
+        if (optionalUser.isEmpty()) {
+            res.setState(false);
+            res.setMsgDesc("Email not registered.");
+            res.setMsgCode("500");
+            return res;
+        }
+
+        User user = optionalUser.get();
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            res.setState(false);
+            res.setMsgDesc("Incorrect password.");
+            res.setMsgCode("500");
+            return res;
+        }
+
+        res.setState(true);
+        res.setMsgDesc("Login successful.");
+        return res;
+    }
+
+
+    @Transactional
     public Result sendResetEmail(String email){
         Result res = new Result();
-        String code = generateRandomCode();
-        res = sendEmail(email , code);
+        String code = serverUtil.generateRandomCode();
+
+        LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(15);
+        passwordResetTokenRepository.deleteByEmail(email);
+
+        PasswordResetToken resetToken = new PasswordResetToken(email , code , expiryTime);
+        passwordResetTokenRepository.save(resetToken);
+
+        res = userAuthDao.sendEmail(email , code);
         return res;
     }
 
-    private void sendEmail1(String userEmail , String resetCode){
-        String userName = userEmail.split("@")[0];
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(userEmail);
-        msg.setSubject("Password Reset Code");
-        msg.setText("Hello " + userName + ". Please use this code :" + resetCode +
-                " to reset the password for OSMS User Account. It will valid for 15 Minutes.");
-
-        mailSender.send(msg);
-    }
-
-    private Result sendEmail(String userEmail, String resetCode) {
+    public Result verifyResetCode(String email, String code) {
         Result res = new Result();
-        String userName = userEmail.split("@")[0];
+        Optional<PasswordResetToken> optionalToken = passwordResetTokenRepository.findByEmailAndToken(email, code);
 
-        try {
-            String htmlTemplate = loadTemplate("templates/resetMail.html");
-            String htmlContent = htmlTemplate
-                    .replace("{{username}}", userName)
-                    .replace("{{code}}", resetCode);
-
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-            helper.setTo(userEmail);
-            helper.setSubject("🔒 Password Reset Code - OSMS");
-            helper.setText(htmlContent, true);
-            mailSender.send(message);
-
-            res.setState(true);
-            res.setMsgDesc("Password Reset Mail Sent Successfully to " + userEmail);
-            res.setMsgCode("200");
-        } catch (MessagingException | IOException e) {
-            e.printStackTrace();
+        if(optionalToken.isEmpty()){
             res.setState(false);
+            res.setMsgDesc("Invalid Code.");
+            return res;
         }
+
+        PasswordResetToken token = optionalToken.get();
+        if (token.getExpiry().isBefore(LocalDateTime.now())) {
+            res.setState(false);
+            res.setMsgDesc("Code expired.");
+            return res;
+        }
+
+        res.setState(true);
+        res.setMsgDesc("Code verified.");
         return res;
     }
 
-    private String loadTemplate(String path) throws IOException {
-        ClassPathResource resource = new ClassPathResource(path);
-        byte[] bytes = Files.readAllBytes(resource.getFile().toPath());
-        return new String(bytes, StandardCharsets.UTF_8);
-    }
+    @Transactional
+    public Result resetPassword(String email, String newPassword) {
+        Result res = new Result();
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
-    private String generateRandomCode(){
-        return UUID.randomUUID().toString().substring(0,8);
+        if (optionalUser.isEmpty()) {
+            res.setState(false);
+            res.setMsgDesc("User not found.");
+            return res;
+        }
+
+        User user = optionalUser.get();
+        String hashedPassword = passwordEncoder.encodePassword(newPassword);
+        user.setPassword(hashedPassword);
+        userRepository.save(user);
+
+        // Remove used token
+        passwordResetTokenRepository.deleteByEmail(email);
+
+        res.setState(true);
+        res.setMsgDesc("Password reset successful.");
+        return res;
     }
 }
