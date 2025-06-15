@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Component
@@ -21,5 +25,18 @@ public class serverUtil {
 
     public String generateRandomCode(){
         return UUID.randomUUID().toString().substring(0,8);
+    }
+
+    public static String ipAddress = "";
+
+    public String getLocalDateTime(){
+        LocalDateTime date = LocalDateTime.now(ZoneId.of("Asia/Rangoon"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        return date.format(formatter);
+    }
+    public String getLocalDate(){
+        LocalDate date = LocalDate.now(ZoneId.of("Asia/Rangoon"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd");
+        return date.format(formatter);
     }
 }

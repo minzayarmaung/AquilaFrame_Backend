@@ -14,6 +14,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -63,7 +64,6 @@ public class userAuthMgr {
         res.setMsgDesc("Login successful.");
         return res;
     }
-
 
     @Transactional
     public Result sendResetEmail(String email){
@@ -128,4 +128,76 @@ public class userAuthMgr {
         res.setMsgDesc("Password reset successful.");
         return res;
     }
+
+    public Result signUpUserMgr(Map<String, String> body) {
+        Result res = new Result();
+        User newUser = new User();
+
+        try {
+            newUser.setCreateddate(serverUtil.getLocalDate());
+            newUser.setModifieddate(serverUtil.getLocalDate());
+            newUser.setUsername(body.get("username"));
+            newUser.setStatus(1);
+            newUser.setEmail(body.get("email"));
+            newUser.setPassword(passwordEncoder.encodePassword(body.get("password")));
+            newUser.setPhone(body.get("phone"));
+
+            newUser.setParentid(parseOrDefault(body.get("parentid"), 0));
+            newUser.setN1(parseOrDefault(body.get("n1"), 0));
+            newUser.setN2(parseOrDefault(body.get("n2"), 0));
+            newUser.setN3(parseOrDefault(body.get("n3"), 0));
+            newUser.setN4(parseOrDefault(body.get("n4"), 0));
+            newUser.setN5(parseOrDefault(body.get("n5"), 0));
+
+            res = checkUserEmailAlreadyExist(newUser.getEmail());
+            if(res.isState()){
+                res = checkUserNameAlreadyExist(newUser.getUsername());
+            }
+
+            if(res.isState()){
+                res = userAuthDao.saveSignupUser(newUser);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return res;
+    }
+
+    private Result checkUserNameAlreadyExist(String username) {
+        Result res = new Result();
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            res.setState(false);
+            res.setMsgDesc("""
+                    Username Already Exists. Please choose another Username. 
+                    """);
+            res.setMsgCode("200");
+        } else {
+            res.setState(true);
+        }
+        return res;
+    }
+
+    private Result checkUserEmailAlreadyExist(String email) {
+        Result res = new Result();
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            res.setState(false);
+            res.setMsgDesc("Email Already Registered !");
+            res.setMsgCode("200");
+        } else {
+            res.setState(true);
+        }
+        return res;
+    }
+
+
+    private int parseOrDefault(String value, int defaultVal) {
+        try {
+            return value != null ? Integer.parseInt(value) : defaultVal;
+        } catch (NumberFormatException e) {
+            return defaultVal;
+        }
+    }
+
 }

@@ -29,6 +29,7 @@ public class User {
     private String password;
     private String email;
     private String phone;
+    private long parentid;
     private long n1;
     private long n2;
     private long n3;
