@@ -105,6 +105,29 @@ public class userAuthMgr {
         return res;
     }
 
+    public Result verifySignUpCode(Map<String , String> body) {
+        Result res = new Result();
+        String email = body.get("email");
+        String code = body.get("code");
+        Optional<PasswordResetToken> optionalToken = passwordResetTokenRepository.findByEmailAndToken(email, code);
+
+        if(optionalToken.isEmpty()){
+            res.setState(false);
+            res.setMsgDesc("Invalid Code.");
+            return res;
+        }
+        PasswordResetToken token = optionalToken.get();
+        if (token.getExpiry().isBefore(LocalDateTime.now())) {
+            res.setState(false);
+            res.setMsgDesc("Code expired.");
+            return res;
+        }
+        res.setState(true);
+        res.setMsgCode("200");
+        res.setMsgDesc("Code verified.");
+        return res;
+    }
+
     @Transactional
     public Result resetPassword(String email, String newPassword) {
         Result res = new Result();
@@ -131,6 +154,20 @@ public class userAuthMgr {
 
     public Result signUpUserMgr(Map<String, String> body) {
         Result res = new Result();
+        String email = body.get("email");
+        try {
+            res = checkUserEmailAlreadyExist(email);
+            if(res.isState()){
+                res = sendSignupVerifyEmail(email);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return res;
+    }
+
+    public Result saveNewUser(Map<String, String> body) {
+        Result res = new Result();
         User newUser = new User();
 
         try {
@@ -149,17 +186,28 @@ public class userAuthMgr {
             newUser.setN4(parseOrDefault(body.get("n4"), 0));
             newUser.setN5(parseOrDefault(body.get("n5"), 0));
 
-            res = checkUserEmailAlreadyExist(newUser.getEmail());
-            if(res.isState()){
-                res = checkUserNameAlreadyExist(newUser.getUsername());
-            }
+            res = userAuthDao.saveSignupUser(newUser);
 
-            if(res.isState()){
-                res = userAuthDao.saveSignupUser(newUser);
-            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        return res;
+    }
+
+    private Result sendSignupVerifyEmail(String email) {
+        Result res = new Result();
+        String code = serverUtil.generateRandomCode();
+
+        LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(15);
+
+        // Delete old tokens
+        passwordResetTokenRepository.deleteByEmail(email);
+
+        // Save new token
+        PasswordResetToken resetToken = new PasswordResetToken(email , code , expiryTime);
+        passwordResetTokenRepository.save(resetToken);
+
+        res = userAuthDao.sendUserVerifyEmail(email , code);
         return res;
     }
 
@@ -191,7 +239,6 @@ public class userAuthMgr {
         return res;
     }
 
-
     private int parseOrDefault(String value, int defaultVal) {
         try {
             return value != null ? Integer.parseInt(value) : defaultVal;
@@ -199,5 +246,4 @@ public class userAuthMgr {
             return defaultVal;
         }
     }
-
 }

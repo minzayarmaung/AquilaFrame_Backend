@@ -40,6 +40,15 @@ public class authController {
         return res;
     }
 
+//    @PostMapping("/verifySignupCode")
+//    private Result verifySignupCode(@RequestBody Map<String , String> body){
+//        Result res = new Result();
+//        String email = body.get("email");
+//        String code = body.get("code");
+//        res = userAuthMgr.verifyResetCode(email , code);
+//        return res;
+//    }
+
     @PostMapping("/resetPassword")
     private Result resetPassword(@RequestBody Map<String , String> body){
         Result res = new Result();

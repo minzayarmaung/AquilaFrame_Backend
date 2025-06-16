@@ -54,12 +54,40 @@ public class userAuthDao {
         return res;
     }
 
+    public Result sendUserVerifyEmail(String userEmail, String resetCode) {
+        Result res = new Result();
+        String userName = userEmail.split("@")[0];
+
+        try {
+            String htmlTemplate = serverUtil.loadTemplate("templates/VerifyUserMail.html");
+            String htmlContent = htmlTemplate
+                    .replace("{{username}}", userName)
+                    .replace("{{code}}", resetCode);
+
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(userEmail);
+            helper.setSubject("🔒 Verify Code - OSMS");
+            helper.setText(htmlContent, true);
+            mailSender.send(message);
+
+            res.setState(true);
+            res.setMsgDesc("Verify Code Mail Sent Successfully to " + userEmail);
+            res.setMsgCode("200");
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+            res.setState(false);
+        }
+        return res;
+    }
+
     public Result saveSignupUser(User newUser) {
         Result res = new Result();
         try {
             userRepository.save(newUser);
             res.setState(true);
-            res.setMsgDesc("Sign Up Successfully 1");
+            res.setMsgDesc("Sign Up Successfully.");
             res.setMsgCode("200");
         } catch (Exception e) {
             throw new RuntimeException(e);

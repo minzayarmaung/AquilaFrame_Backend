@@ -23,4 +23,14 @@ public class signupController {
         res = userAuthMgr.signUpUserMgr(body);
         return res;
     }
+
+    @PostMapping("/verifySignupCode")
+    public Result verifySignupCode(@RequestBody Map<String , String> body){
+        Result res = new Result();
+        res = userAuthMgr.verifySignUpCode(body);
+        if(res.isState()){
+            res = userAuthMgr.saveNewUser(body);
+        }
+        return res;
+    }
 }
