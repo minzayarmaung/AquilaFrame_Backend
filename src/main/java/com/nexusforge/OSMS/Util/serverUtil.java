@@ -36,7 +36,7 @@ public class serverUtil {
     }
     public String getLocalDate(){
         LocalDate date = LocalDate.now(ZoneId.of("Asia/Rangoon"));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         return date.format(formatter);
     }
 }

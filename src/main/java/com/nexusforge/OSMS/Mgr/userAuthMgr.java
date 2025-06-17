@@ -122,6 +122,11 @@ public class userAuthMgr {
             res.setMsgDesc("Code expired.");
             return res;
         }
+
+        // Remove used token
+        if(res.isState()){
+            passwordResetTokenRepository.deleteByEmail(email);
+        }
         res.setState(true);
         res.setMsgCode("200");
         res.setMsgDesc("Code verified.");
@@ -200,9 +205,6 @@ public class userAuthMgr {
 
         LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(15);
 
-        // Delete old tokens
-        passwordResetTokenRepository.deleteByEmail(email);
-
         // Save new token
         PasswordResetToken resetToken = new PasswordResetToken(email , code , expiryTime);
         passwordResetTokenRepository.save(resetToken);
@@ -226,7 +228,7 @@ public class userAuthMgr {
         return res;
     }
 
-    private Result checkUserEmailAlreadyExist(String email) {
+    public Result checkUserEmailAlreadyExist(String email) {
         Result res = new Result();
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
@@ -239,6 +241,21 @@ public class userAuthMgr {
         return res;
     }
 
+    public Result checkEmailExistInSystem(String email) {
+        Result res = new Result();
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if(optionalUser.isPresent()){
+            res.setState(true);
+            res.setMsgCode("200");
+            res.setMsgDesc("Email exists in System.");
+        } else {
+            res.setState(false);
+            res.setMsgCode("500");
+            res.setMsgDesc("Email is not Registered in System.");
+        }
+        return res;
+    }
+
     private int parseOrDefault(String value, int defaultVal) {
         try {
             return value != null ? Integer.parseInt(value) : defaultVal;
@@ -246,4 +263,6 @@ public class userAuthMgr {
             return defaultVal;
         }
     }
+
+
 }
