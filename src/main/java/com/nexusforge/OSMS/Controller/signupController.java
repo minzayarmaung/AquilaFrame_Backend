@@ -33,4 +33,12 @@ public class signupController {
         }
         return res;
     }
+
+    @PostMapping("/resendSignupCode")
+    public Result resendSignupCode(@RequestBody Map<String , String> body){
+        Result res = new Result();
+        String email = body.get("email");
+        res = userAuthMgr.sendSignupVerifyEmail(email);
+        return res;
+    }
 }

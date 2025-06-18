@@ -199,7 +199,7 @@ public class userAuthMgr {
         return res;
     }
 
-    private Result sendSignupVerifyEmail(String email) {
+    public Result sendSignupVerifyEmail(String email) {
         Result res = new Result();
         String code = serverUtil.generateRandomCode();
 
