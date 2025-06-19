@@ -11,8 +11,8 @@
 	<groupId>com.nexusforge</groupId>
 	<artifactId>OSMS</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>OSMS</name>
-	<description>Online School Management System</description>
+	<name>AquilaFrame</name>
+	<description>Aquila Framework System</description>
 	<url/>
 	<licenses>
 		<license/>
