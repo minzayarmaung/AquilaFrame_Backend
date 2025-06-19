@@ -1,0 +1,29 @@
+package com.nexusforge.OSMS.Entity;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
+public class CreateTable {
+
+    private String tableName;
+    private List<ColumnDefinition> columns;
+
+    @Getter
+    @Setter
+    public static class ColumnDefinition {
+        private String name;
+        private String type;
+
+        @JsonProperty("isPrimaryKey")
+        private boolean isPrimaryKey;
+
+        @JsonProperty("isNotNull")
+        private boolean isNotNull;
+
+    }
+}

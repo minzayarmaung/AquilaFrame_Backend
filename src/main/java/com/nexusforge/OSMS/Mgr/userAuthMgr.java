@@ -105,6 +105,7 @@ public class userAuthMgr {
         return res;
     }
 
+    @Transactional
     public Result verifySignUpCode(Map<String , String> body) {
         Result res = new Result();
         String email = body.get("email");
@@ -124,9 +125,8 @@ public class userAuthMgr {
         }
 
         // Remove used token
-        if(res.isState()){
-            passwordResetTokenRepository.deleteByEmail(email);
-        }
+        passwordResetTokenRepository.deleteByEmail(email);
+
         res.setState(true);
         res.setMsgCode("200");
         res.setMsgDesc("Code verified.");
@@ -160,8 +160,12 @@ public class userAuthMgr {
     public Result signUpUserMgr(Map<String, String> body) {
         Result res = new Result();
         String email = body.get("email");
+        String userName = body.get("username");
         try {
             res = checkUserEmailAlreadyExist(email);
+            if(res.isState()){
+                res = checkUserNameAlreadyExist(userName);
+            }
             if(res.isState()){
                 res = sendSignupVerifyEmail(email);
             }

@@ -39,4 +39,12 @@ public class serverUtil {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         return date.format(formatter);
     }
+
+    public boolean checkIllegalArgument(String value){
+        if(value.matches("^[a-zA-Z][a-zA-Z0-9_]*$")){
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
