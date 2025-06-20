@@ -4,9 +4,10 @@ import com.nexusforge.AquilaFramework.Entity.CreateTable;
 import com.nexusforge.AquilaFramework.Entity.Result;
 import com.nexusforge.AquilaFramework.Mgr.createTableMgr;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/tableController")
@@ -15,15 +16,11 @@ public class tableController {
     @Autowired
     private createTableMgr createTableMgr;
 
-    @RequestMapping("/createTable")
-    public Result createNewTable(@RequestBody CreateTable createTable){
+    @PostMapping("/createTable")
+    public Result createNewTable(@RequestBody CreateTable createTable) {
         Result res = new Result();
         try {
             res = createTableMgr.createNewTable(createTable);
-
-            res.setState(true);
-            res.setMsgCode("200");
-            res.setMsgDesc("Table created successfully.");
         } catch (Exception e) {
             res.setState(false);
             res.setMsgCode("500");
@@ -31,4 +28,16 @@ public class tableController {
         }
         return res;
     }
+
+    @GetMapping("/showTables")
+    public List<String> getAllTables() {
+        try {
+            return createTableMgr.getAllTables();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList(); // Return empty list on error
+        }
+    }
 }
+
+
