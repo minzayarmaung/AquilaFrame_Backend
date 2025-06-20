@@ -27,6 +27,9 @@ public class createTableDao {
             conn = dataSource.getConnection();
             stmt = conn.createStatement();
             stmt.executeUpdate(createSQL);
+            res.setState(true);
+            res.setMsgDesc("Table Name : "+ tableName +"Created Successfully.");
+            res.setMsgCode("200");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }finally {

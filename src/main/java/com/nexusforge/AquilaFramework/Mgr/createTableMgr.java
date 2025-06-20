@@ -91,7 +91,10 @@ public class createTableMgr {
 
     
     public List<String> getAllTables() {
-        String sql = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'";
+        String sql = "SELECT table_name\n" +
+                "FROM information_schema.tables\n" +
+                "WHERE table_schema = 'public'\n" +
+                "  AND table_name NOT IN ('uvm001', 'password_verify_token');";
         return jdbcTemplate.queryForList(sql, String.class);
     }
 
