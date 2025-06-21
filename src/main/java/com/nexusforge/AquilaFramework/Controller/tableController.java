@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/tableController")
@@ -37,6 +38,14 @@ public class tableController {
             e.printStackTrace();
             return Collections.emptyList(); // Return empty list on error
         }
+    }
+
+    @PostMapping("/deleteTable")
+    public Result deleteTable(@RequestBody Map<String , String> body){
+        Result res = new Result();
+        String tableName = body.get("tableName");
+        res = createTableMgr.dropTable(tableName);
+        return res;
     }
 }
 

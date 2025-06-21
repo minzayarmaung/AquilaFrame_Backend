@@ -2,6 +2,7 @@ package com.nexusforge.AquilaFramework.Dao;
 
 import com.nexusforge.AquilaFramework.Entity.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -13,6 +14,9 @@ public class createTableDao {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public Result createNewTableDao(String tableName, List<String> columnDefs, List<String> primaryKeys) {
         Result res = new Result();
@@ -43,4 +47,17 @@ public class createTableDao {
         return res;
     }
 
+    public Result dropTableDao(String tableName) {
+        Result res = new Result();
+        try {
+            String sql = "Drop Table If Exists " + tableName;
+            jdbcTemplate.execute(sql);
+            res.setState(true);
+            res.setMsgCode("200");
+            res.setMsgDesc("Table : " +tableName+" Dropped Successfully.");
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return res;
+    }
 }

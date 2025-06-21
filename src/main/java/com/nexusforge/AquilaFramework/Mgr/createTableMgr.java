@@ -75,13 +75,14 @@ public class createTableMgr {
         String sql = "SELECT EXISTS (" +
                 "SELECT 1 FROM information_schema.tables " +
                 "WHERE table_schema = 'public' AND table_name = ?)";
+
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, tableName.toLowerCase());
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return rs.getBoolean(1);
+                return true;
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error checking table existence", e);
@@ -98,4 +99,15 @@ public class createTableMgr {
         return jdbcTemplate.queryForList(sql, String.class);
     }
 
+    public Result dropTable(String tableName) {
+        Result res = new Result();
+        if(doesTableExist(tableName)){
+            res = createTableDao.dropTableDao(tableName);
+        } else {
+            res.setState(false);
+            res.setMsgCode("500");
+            res.setMsgDesc("Failed Dropping Table "+ tableName);
+        }
+        return res;
+    }
 }
