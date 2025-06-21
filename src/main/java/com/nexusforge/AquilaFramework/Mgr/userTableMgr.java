@@ -1,6 +1,7 @@
 package com.nexusforge.AquilaFramework.Mgr;
 
-import com.nexusforge.AquilaFramework.Dao.createTableDao;
+import com.nexusforge.AquilaFramework.Dao.userTableDao;
+import com.nexusforge.AquilaFramework.Dto.TableDetailsDto;
 import com.nexusforge.AquilaFramework.Entity.CreateTable;
 import com.nexusforge.AquilaFramework.Entity.Result;
 import com.nexusforge.AquilaFramework.Util.serverUtil;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class createTableMgr {
+public class userTableMgr {
 
     @Autowired
     private serverUtil serverUtil;
@@ -29,7 +30,7 @@ public class createTableMgr {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private createTableDao createTableDao;
+    private userTableDao userTableDao;
 
     public Result createNewTable(CreateTable requestData) {
         Result res = new Result();
@@ -39,7 +40,7 @@ public class createTableMgr {
             List<String> columnDefs = new ArrayList<>();
             List<String> primaryKeys = new ArrayList<>();
 
-            if(!doesTableExist(tableName)){
+            if(!doesTableAlreadyExist(tableName)){
                 for (CreateTable.ColumnDefinition col : requestData.getColumns()) {
                     String columnName = col.getName();
                     String columnType = col.getType();
@@ -59,7 +60,7 @@ public class createTableMgr {
                         primaryKeys.add(columnName);
                     }
                 }
-                res = createTableDao.createNewTableDao(tableName , columnDefs , primaryKeys );
+                res = userTableDao.createNewTableDao(tableName , columnDefs , primaryKeys );
             } else {
                 res.setState(false);
                 res.setMsgCode("500");
@@ -71,7 +72,8 @@ public class createTableMgr {
         return res;
     }
 
-    public boolean doesTableExist(String tableName) {
+    public boolean doesTableAlreadyExist(String tableName) {
+        boolean state = false;
         String sql = "SELECT EXISTS (" +
                 "SELECT 1 FROM information_schema.tables " +
                 "WHERE table_schema = 'public' AND table_name = ?)";
@@ -82,12 +84,12 @@ public class createTableMgr {
             ps.setString(1, tableName.toLowerCase());
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return true;
+                state = rs.getBoolean("exists");
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error checking table existence", e);
         }
-        return false;
+        return state;
     }
 
     
@@ -101,13 +103,29 @@ public class createTableMgr {
 
     public Result dropTable(String tableName) {
         Result res = new Result();
-        if(doesTableExist(tableName)){
-            res = createTableDao.dropTableDao(tableName);
+        if(doesTableAlreadyExist(tableName)){
+            res = userTableDao.dropTableDao(tableName);
         } else {
             res.setState(false);
             res.setMsgCode("500");
             res.setMsgDesc("Failed Dropping Table "+ tableName);
         }
+        return res;
+    }
+
+    public TableDetailsDto getTableDetailsData(String tableName) {
+        TableDetailsDto tableData = new TableDetailsDto();
+        try {
+            tableData = userTableDao.getTableDataDao(tableName);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return tableData;
+    }
+
+    public Result updateTable(CreateTable createTable) {
+        Result res = new Result();
+
         return res;
     }
 }

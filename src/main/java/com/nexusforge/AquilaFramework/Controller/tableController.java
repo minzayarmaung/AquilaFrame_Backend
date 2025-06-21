@@ -1,8 +1,9 @@
 package com.nexusforge.AquilaFramework.Controller;
 
+import com.nexusforge.AquilaFramework.Dto.TableDetailsDto;
 import com.nexusforge.AquilaFramework.Entity.CreateTable;
 import com.nexusforge.AquilaFramework.Entity.Result;
-import com.nexusforge.AquilaFramework.Mgr.createTableMgr;
+import com.nexusforge.AquilaFramework.Mgr.userTableMgr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,13 +16,17 @@ import java.util.Map;
 public class tableController {
 
     @Autowired
-    private createTableMgr createTableMgr;
+    private userTableMgr userTableMgr;
 
     @PostMapping("/createTable")
     public Result createNewTable(@RequestBody CreateTable createTable) {
         Result res = new Result();
         try {
-            res = createTableMgr.createNewTable(createTable);
+            if(userTableMgr.doesTableAlreadyExist(createTable.getTableName())){
+                res = userTableMgr.updateTable(createTable);
+            } else {
+                res = userTableMgr.createNewTable(createTable);
+            }
         } catch (Exception e) {
             res.setState(false);
             res.setMsgCode("500");
@@ -33,7 +38,7 @@ public class tableController {
     @GetMapping("/showTables")
     public List<String> getAllTables() {
         try {
-            return createTableMgr.getAllTables();
+            return userTableMgr.getAllTables();
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList(); // Return empty list on error
@@ -44,8 +49,13 @@ public class tableController {
     public Result deleteTable(@RequestBody Map<String , String> body){
         Result res = new Result();
         String tableName = body.get("tableName");
-        res = createTableMgr.dropTable(tableName);
+        res = userTableMgr.dropTable(tableName);
         return res;
+    }
+
+    @GetMapping("/getTableDetails")
+    public TableDetailsDto getTableDetails(@RequestParam String name){
+        return userTableMgr.getTableDetailsData(name);
     }
 }
 

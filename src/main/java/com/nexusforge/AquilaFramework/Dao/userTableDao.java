@@ -1,6 +1,9 @@
 package com.nexusforge.AquilaFramework.Dao;
 
+import com.nexusforge.AquilaFramework.Dto.ColumnDto;
+import com.nexusforge.AquilaFramework.Dto.TableDetailsDto;
 import com.nexusforge.AquilaFramework.Entity.Result;
+import jakarta.persistence.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -10,7 +13,7 @@ import java.sql.*;
 import java.util.List;
 
 @Service
-public class createTableDao {
+public class userTableDao {
 
     @Autowired
     private DataSource dataSource;
@@ -59,5 +62,42 @@ public class createTableDao {
             e.printStackTrace();
         }
         return res;
+    }
+
+    public TableDetailsDto getTableDataDao(String tableName) {
+        TableDetailsDto tableData = new TableDetailsDto();
+
+        String columnSql = """
+        SELECT 
+            c.column_name,
+            c.data_type,
+            c.is_nullable,
+            EXISTS (
+                SELECT 1 
+                FROM information_schema.table_constraints tc
+                JOIN information_schema.key_column_usage kcu 
+                ON tc.constraint_name = kcu.constraint_name
+                WHERE tc.table_name = c.table_name 
+                AND kcu.column_name = c.column_name
+                AND tc.constraint_type = 'PRIMARY KEY'
+            ) AS is_primary_key
+        FROM information_schema.columns c
+        WHERE c.table_name = ?
+        ORDER BY c.ordinal_position
+    """;
+
+        List<ColumnDto> columns = jdbcTemplate.query(columnSql, new Object[]{tableName}, (rs, rowNum) -> {
+            ColumnDto column = new ColumnDto();
+            column.setName(rs.getString("column_name"));
+            column.setType(rs.getString("data_type").toUpperCase());
+            column.setNotNull("NO".equals(rs.getString("is_nullable")));
+            column.setPrimaryKey(rs.getBoolean("is_primary_key"));
+            return column;
+        });
+
+        TableDetailsDto dto = new TableDetailsDto();
+        dto.setTableName(tableName);
+        dto.setColumns(columns);
+        return dto;
     }
 }
