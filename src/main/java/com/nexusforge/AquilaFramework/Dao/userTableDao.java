@@ -135,65 +135,69 @@ public class userTableDao {
         Result res = new Result();
         List<String> alterStatements = new ArrayList<>();
 
-        // 1. Build new column names set manually
+        // Lowercase for consistent matching
         Set<String> newColNames = new HashSet<>();
-        for (int i = 0; i < newColumns.size(); i++) {
-            newColNames.add(newColumns.get(i).getName().toLowerCase());
+        for (CreateTable.ColumnDefinition col : newColumns) {
+            newColNames.add(col.getName().toLowerCase());
         }
 
-        // 2. Drop columns not in newColNames
+        // 1. Drop columns not present in newColumns and NOT primary key
         for (String existing : existingCols) {
-            if (!newColNames.contains(existing)) {
-                alterStatements.add("DROP COLUMN " + existing);
+            boolean isStillPresent = newColNames.contains(existing);
+            boolean isPK = false;
+
+            for (CreateTable.ColumnDefinition col : newColumns) {
+                if (col.getName().equalsIgnoreCase(existing) && col.isPrimaryKey()) {
+                    isPK = true;
+                    break;
+                }
+            }
+
+            if (!isStillPresent && !isPK) {
+                alterStatements.add("DROP COLUMN \"" + existing + "\"");
             }
         }
 
-        // 3. Handle add and alter
-        for (int i = 0; i < newColumns.size(); i++) {
-            CreateTable.ColumnDefinition col = newColumns.get(i);
+        // 2. Add or Alter columns
+        for (CreateTable.ColumnDefinition col : newColumns) {
             String name = col.getName().toLowerCase();
+            String quotedName = "\"" + name + "\"";
             String type = col.getType();
             boolean notNull = col.isNotNull();
 
-            // ✅ SKIP altering PK column
             if (col.isPrimaryKey()) {
                 System.out.println("Skipping PK column: " + name);
-                continue;
+                continue; // Don’t alter PK columns
             }
 
             if (!existingCols.contains(name)) {
-                String addStmt = "ADD COLUMN " + name + " " + type;
-                if (notNull) {
-                    addStmt += " NOT NULL";
-                }
+                String addStmt = "ADD COLUMN " + quotedName + " " + type;
+                if (notNull) addStmt += " NOT NULL";
                 alterStatements.add(addStmt);
             } else {
                 userTableMgr.ColumnMeta oldMeta = existingMeta.get(name);
+                if (oldMeta == null) continue;
 
                 if (!oldMeta.type.equalsIgnoreCase(type)) {
-                    alterStatements.add("ALTER COLUMN " + name + " TYPE " + type);
+                    alterStatements.add("ALTER COLUMN " + quotedName + " TYPE " + type);
                 }
 
                 if (oldMeta.notNull != notNull) {
-                    if (notNull) {
-                        alterStatements.add("ALTER COLUMN " + name + " SET NOT NULL");
-                    } else {
-                        alterStatements.add("ALTER COLUMN " + name + " DROP NOT NULL");
-                    }
+                    alterStatements.add("ALTER COLUMN " + quotedName + (notNull ? " SET" : " DROP") + " NOT NULL");
                 }
             }
         }
 
-        // 4. Execute if needed
+        // 3. Execute
         if (alterStatements.isEmpty()) {
-            res.setMsgCode("NO_CHANGES");
             res.setState(true);
+            res.setMsgCode("NO_CHANGES");
             res.setMsgDesc("No changes detected for table: " + tableName);
             return res;
         }
 
-        String sql = "ALTER TABLE " + tableName + " " + String.join(", ", alterStatements);
-        System.out.println("Executing SQL: ALTER TABLE " + tableName + " " + String.join(", ", alterStatements));
+        String sql = "ALTER TABLE \"" + tableName + "\" " + String.join(", ", alterStatements);
+        System.out.println("Executing SQL: " + sql);
 
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
@@ -201,7 +205,6 @@ public class userTableDao {
             stmt.execute(sql);
             res.setState(true);
             res.setMsgDesc("Table '" + tableName + "' updated successfully.");
-
         } catch (SQLException e) {
             res.setState(false);
             res.setMsgCode("500");
@@ -210,5 +213,6 @@ public class userTableDao {
 
         return res;
     }
+
 
 }
