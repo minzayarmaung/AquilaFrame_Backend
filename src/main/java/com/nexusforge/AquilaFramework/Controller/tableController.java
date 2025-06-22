@@ -22,7 +22,7 @@ public class tableController {
     public Result createNewTable(@RequestBody CreateTable createTable) {
         Result res = new Result();
         try {
-            if(userTableMgr.doesTableAlreadyExist(createTable.getTableName())){
+            if(createTable.isUpdate()){
                 res = userTableMgr.updateTable(createTable);
             } else {
                 res = userTableMgr.createNewTable(createTable);

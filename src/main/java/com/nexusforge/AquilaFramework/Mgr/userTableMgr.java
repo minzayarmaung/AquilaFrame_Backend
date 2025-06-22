@@ -14,8 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class userTableMgr {
@@ -124,8 +123,21 @@ public class userTableMgr {
     }
 
     public Result updateTable(CreateTable createTable) {
-        Result res = new Result();
+        String tableName = createTable.getTableName();
+        List<CreateTable.ColumnDefinition> newColumns = createTable.getColumns();
 
-        return res;
+        Set<String> existingCols = new HashSet<>();
+        Map<String, ColumnMeta> existingMeta = userTableDao.getExistingColumnsFromDB(tableName, existingCols);
+
+        return userTableDao.buildAndExecuteAlterSQL(tableName, existingCols, existingMeta, newColumns);
+    }
+    public static class ColumnMeta {
+        public String type;
+        public boolean notNull;
+
+        public ColumnMeta(String type, boolean notNull) {
+            this.type = type;
+            this.notNull = notNull;
+        }
     }
 }

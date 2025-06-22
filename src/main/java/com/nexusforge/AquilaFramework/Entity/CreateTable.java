@@ -12,6 +12,16 @@ public class CreateTable {
 
     private String tableName;
     private List<ColumnDefinition> columns;
+    @JsonProperty("isUpdate")
+    private boolean isUpdate;
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    public void setColumns(List<ColumnDefinition> columns) {
+        this.columns = columns;
+    }
 
     @Getter
     @Setter
