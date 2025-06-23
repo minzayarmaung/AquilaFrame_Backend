@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.util.Base64;
 
 @Component
-public class passwordEncoder {
+public class CustomPasswordEncoder {
 
     public String encodePassword(String plainPassword) {
         return Base64.getEncoder().encodeToString(plainPassword.getBytes());

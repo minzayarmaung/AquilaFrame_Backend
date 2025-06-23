@@ -3,11 +3,13 @@ package com.nexusforge.AquilaFramework.Controller;
 import com.nexusforge.AquilaFramework.Entity.Result;
 import com.nexusforge.AquilaFramework.Mgr.userAuthMgr;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.Map;
 
 @RestController

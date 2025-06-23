@@ -6,14 +6,18 @@ import com.nexusforge.AquilaFramework.Entity.Result;
 import com.nexusforge.AquilaFramework.Entity.User;
 import com.nexusforge.AquilaFramework.Repository.PasswordResetTokenRepository;
 import com.nexusforge.AquilaFramework.Repository.UserRepository;
-import com.nexusforge.AquilaFramework.Util.passwordEncoder;
+import com.nexusforge.AquilaFramework.Service.UserDetailsService;
+import com.nexusforge.AquilaFramework.Util.JwtUtil;
+import com.nexusforge.AquilaFramework.Util.CustomPasswordEncoder;
 import com.nexusforge.AquilaFramework.Util.serverUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -36,7 +40,13 @@ public class userAuthMgr {
     private userAuthDao userAuthDao;
 
     @Autowired
-    private passwordEncoder passwordEncoder;
+    private CustomPasswordEncoder CustomPasswordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
 
     @Transactional
@@ -53,15 +63,18 @@ public class userAuthMgr {
 
         User user = optionalUser.get();
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        if (!CustomPasswordEncoder.matches(password, user.getPassword())) {
             res.setState(false);
             res.setMsgDesc("Incorrect password.");
             res.setMsgCode("500");
             return res;
         }
 
+        String token = jwtUtil.generateToken(user);
+
         res.setState(true);
         res.setMsgDesc("Login successful.");
+        res.setToken(token);
         return res;
     }
 
@@ -145,7 +158,7 @@ public class userAuthMgr {
         }
 
         User user = optionalUser.get();
-        String hashedPassword = passwordEncoder.encodePassword(newPassword);
+        String hashedPassword = CustomPasswordEncoder.encodePassword(newPassword);
         user.setPassword(hashedPassword);
         userRepository.save(user);
 
@@ -185,7 +198,7 @@ public class userAuthMgr {
             newUser.setUsername(body.get("username"));
             newUser.setStatus(1);
             newUser.setEmail(body.get("email"));
-            newUser.setPassword(passwordEncoder.encodePassword(body.get("password")));
+            newUser.setPassword(CustomPasswordEncoder.encodePassword(body.get("password")));
             newUser.setPhone(body.get("phone"));
 
             newUser.setParentid(parseOrDefault(body.get("parentid"), 0));
@@ -196,6 +209,15 @@ public class userAuthMgr {
             newUser.setN5(parseOrDefault(body.get("n5"), 0));
 
             res = userAuthDao.saveSignupUser(newUser);
+
+            if(res.isState()){
+                String username = body.get("username");
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                String jwt = jwtUtil.generateToken((User) userDetails);
+                res.setMsgDesc("Signup successful");
+                res.setData(Collections.singletonMap("token", jwt)); // send token in `data`
+            }
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
