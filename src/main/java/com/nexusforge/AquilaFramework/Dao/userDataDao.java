@@ -13,9 +13,9 @@ public class userDataDao {
     @Autowired
     UserRepository userRepository;
 
-    public User getUserDataByEmail(String email) {
+    public User getUserDataByUserNameDao(String username) {
         User userInfo = new User();
-        Optional<User> userData = userRepository.findByEmail(email);
+        Optional<User> userData = userRepository.findByUsername(username);
 
         if(userData.isPresent()){
             userInfo = userData.get();

@@ -13,10 +13,8 @@ public class userDataMgr {
     @Autowired
     userDataDao userDataDao;
 
-    public User getUserDataByEmail(Map<String, String> body) {
-        User userInfo = new User();
-        String email = body.get("email");
-        userInfo = userDataDao.getUserDataByEmail(email);
-        return userInfo;
+    public User getUserDataByUserNameMgr(String username) {
+        return userDataDao.getUserDataByUserNameDao(username);
     }
+
 }
