@@ -1,15 +1,15 @@
 package com.nexusforge.AquilaFramework.Mgr;
 
-import com.nexusforge.AquilaFramework.Dao.userAuthDao;
-import com.nexusforge.AquilaFramework.Entity.PasswordResetToken;
-import com.nexusforge.AquilaFramework.Entity.Result;
-import com.nexusforge.AquilaFramework.Entity.User;
+import com.nexusforge.AquilaFramework.dao.UserAuthDao;
+import com.nexusforge.AquilaFramework.entity.PasswordResetToken;
+import com.nexusforge.AquilaFramework.entity.Result;
+import com.nexusforge.AquilaFramework.entity.User;
 import com.nexusforge.AquilaFramework.Repository.PasswordResetTokenRepository;
 import com.nexusforge.AquilaFramework.Repository.UserRepository;
 import com.nexusforge.AquilaFramework.Service.UserDetailsService;
 import com.nexusforge.AquilaFramework.Util.JwtUtil;
 import com.nexusforge.AquilaFramework.Util.CustomPasswordEncoder;
-import com.nexusforge.AquilaFramework.Util.serverUtil;
+import com.nexusforge.AquilaFramework.Util.ServerUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class userAuthMgr {
+public class UserAuthMgr {
 
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
@@ -34,10 +34,10 @@ public class userAuthMgr {
     private JavaMailSender mailSender;
 
     @Autowired
-    private serverUtil serverUtil;
+    private ServerUtil serverUtil;
 
     @Autowired
-    private userAuthDao userAuthDao;
+    private UserAuthDao userAuthDao;
 
     @Autowired
     private CustomPasswordEncoder CustomPasswordEncoder;
@@ -47,7 +47,6 @@ public class userAuthMgr {
 
     @Autowired
     private UserDetailsService userDetailsService;
-
 
     @Transactional
     public Result verifyLoginUser(String email, String password) {
@@ -213,11 +212,10 @@ public class userAuthMgr {
             if(res.isState()){
                 String username = body.get("username");
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                String jwt = jwtUtil.generateToken((User) userDetails);
+                String jwt = jwtUtil.generateToken(userDetails);
                 res.setMsgDesc("Signup successful");
                 res.setData(Collections.singletonMap("token", jwt)); // send token in `data`
             }
-
 
         } catch (Exception e) {
             throw new RuntimeException(e);

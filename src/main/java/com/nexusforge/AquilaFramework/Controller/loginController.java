@@ -1,7 +1,7 @@
-package com.nexusforge.AquilaFramework.Controller;
+package com.nexusforge.AquilaFramework.controller;
 
-import com.nexusforge.AquilaFramework.Entity.Result;
-import com.nexusforge.AquilaFramework.Mgr.userAuthMgr;
+import com.nexusforge.AquilaFramework.entity.Result;
+import com.nexusforge.AquilaFramework.Mgr.UserAuthMgr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,10 +10,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/loginController")
-public class loginController {
+public class LoginController {
 
     @Autowired
-    private userAuthMgr userAuthMgr;
+    private UserAuthMgr userAuthMgr;
 
     @PostMapping("/login")
     private Result loginUser(@RequestBody Map<String , String> body) {

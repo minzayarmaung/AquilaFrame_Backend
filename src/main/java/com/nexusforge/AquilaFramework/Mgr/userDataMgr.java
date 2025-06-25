@@ -1,20 +1,18 @@
 package com.nexusforge.AquilaFramework.Mgr;
 
-import com.nexusforge.AquilaFramework.Dao.userDataDao;
-import com.nexusforge.AquilaFramework.Entity.User;
+import com.nexusforge.AquilaFramework.dao.UserDataDao;
+import com.nexusforge.AquilaFramework.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 @Service
-public class userDataMgr {
+public class UserDataMgr {
 
     @Autowired
-    userDataDao userDataDao;
+    UserDataDao userDataDao;
 
-    public User getUserDataByUserNameMgr(String username) {
-        return userDataDao.getUserDataByUserNameDao(username);
+    public User getUserDataByUserEmailMgr(String email) {
+        return userDataDao.getUserDataByUserEmailDao(email);
     }
 
 }

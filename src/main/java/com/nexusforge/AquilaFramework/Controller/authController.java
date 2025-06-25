@@ -1,7 +1,7 @@
-package com.nexusforge.AquilaFramework.Controller;
+package com.nexusforge.AquilaFramework.controller;
 
-import com.nexusforge.AquilaFramework.Entity.Result;
-import com.nexusforge.AquilaFramework.Mgr.userAuthMgr;
+import com.nexusforge.AquilaFramework.entity.Result;
+import com.nexusforge.AquilaFramework.Mgr.UserAuthMgr;
 import com.nexusforge.AquilaFramework.Repository.PasswordResetTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,10 +13,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/authController")
-public class authController {
+public class AuthController {
 
     @Autowired
-    private userAuthMgr userAuthMgr;
+    private UserAuthMgr userAuthMgr;
 
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;

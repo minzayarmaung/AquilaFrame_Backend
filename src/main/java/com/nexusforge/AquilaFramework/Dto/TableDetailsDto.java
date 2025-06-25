@@ -1,4 +1,4 @@
-package com.nexusforge.AquilaFramework.Dto;
+package com.nexusforge.AquilaFramework.dto;
 
 import lombok.Getter;
 import lombok.Setter;

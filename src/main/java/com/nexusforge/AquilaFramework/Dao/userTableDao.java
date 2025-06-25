@@ -1,12 +1,10 @@
-package com.nexusforge.AquilaFramework.Dao;
+package com.nexusforge.AquilaFramework.dao;
 
-import com.nexusforge.AquilaFramework.Dto.ColumnDto;
-import com.nexusforge.AquilaFramework.Dto.TableDetailsDto;
-import com.nexusforge.AquilaFramework.Entity.CreateTable;
-import com.nexusforge.AquilaFramework.Entity.Result;
-import com.nexusforge.AquilaFramework.Mgr.userTableMgr;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.processing.SQL;
+import com.nexusforge.AquilaFramework.dto.ColumnDto;
+import com.nexusforge.AquilaFramework.dto.TableDetailsDto;
+import com.nexusforge.AquilaFramework.entity.CreateTable;
+import com.nexusforge.AquilaFramework.entity.Result;
+import com.nexusforge.AquilaFramework.Mgr.UserTableMgr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,7 @@ import java.sql.*;
 import java.util.*;
 
 @Service
-public class userTableDao {
+public class UserTableDao {
 
     @Autowired
     private DataSource dataSource;
@@ -104,8 +102,8 @@ public class userTableDao {
         return dto;
     }
 
-    public Map<String, userTableMgr.ColumnMeta> getExistingColumnsFromDB(String tableName, Set<String> existingCols) {
-        Map<String , userTableMgr.ColumnMeta> columnMetaMap = new HashMap<>();
+    public Map<String, UserTableMgr.ColumnMeta> getExistingColumnsFromDB(String tableName, Set<String> existingCols) {
+        Map<String , UserTableMgr.ColumnMeta> columnMetaMap = new HashMap<>();
 
         try(Connection conn = dataSource.getConnection()){
             DatabaseMetaData meta = conn.getMetaData();
@@ -115,7 +113,7 @@ public class userTableDao {
                     String colType = rs.getString("TYPE_NAME");
                     boolean notNull = "NO".equalsIgnoreCase(rs.getString("IS_NULLABLE"));
 
-                    columnMetaMap.put(colName, new userTableMgr.ColumnMeta(colType, notNull));
+                    columnMetaMap.put(colName, new UserTableMgr.ColumnMeta(colType, notNull));
                     existingCols.add(colName);
                 }
             }
@@ -129,7 +127,7 @@ public class userTableDao {
     public Result buildAndExecuteAlterSQL(
             String tableName,
             Set<String> existingCols,
-            Map<String, userTableMgr.ColumnMeta> existingMeta,
+            Map<String, UserTableMgr.ColumnMeta> existingMeta,
             List<CreateTable.ColumnDefinition> newColumns
     ) {
         Result res = new Result();
@@ -175,7 +173,7 @@ public class userTableDao {
                 if (notNull) addStmt += " NOT NULL";
                 alterStatements.add(addStmt);
             } else {
-                userTableMgr.ColumnMeta oldMeta = existingMeta.get(name);
+                UserTableMgr.ColumnMeta oldMeta = existingMeta.get(name);
                 if (oldMeta == null) continue;
 
                 if (!oldMeta.type.equalsIgnoreCase(type)) {

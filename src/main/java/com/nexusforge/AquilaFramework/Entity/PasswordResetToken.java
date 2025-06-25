@@ -1,4 +1,4 @@
-package com.nexusforge.AquilaFramework.Entity;
+package com.nexusforge.AquilaFramework.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

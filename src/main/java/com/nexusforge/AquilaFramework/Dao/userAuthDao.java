@@ -1,9 +1,9 @@
-package com.nexusforge.AquilaFramework.Dao;
+package com.nexusforge.AquilaFramework.dao;
 
-import com.nexusforge.AquilaFramework.Entity.Result;
-import com.nexusforge.AquilaFramework.Entity.User;
+import com.nexusforge.AquilaFramework.entity.Result;
+import com.nexusforge.AquilaFramework.entity.User;
 import com.nexusforge.AquilaFramework.Repository.UserRepository;
-import com.nexusforge.AquilaFramework.Util.serverUtil;
+import com.nexusforge.AquilaFramework.Util.ServerUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +14,13 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class userAuthDao {
+public class UserAuthDao {
 
     @Autowired
     UserRepository userRepository;
 
     @Autowired
-    private serverUtil serverUtil;
+    private ServerUtil serverUtil;
 
     @Autowired
     private JavaMailSender mailSender;

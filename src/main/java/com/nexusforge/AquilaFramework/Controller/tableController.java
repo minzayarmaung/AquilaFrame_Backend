@@ -1,9 +1,9 @@
-package com.nexusforge.AquilaFramework.Controller;
+package com.nexusforge.AquilaFramework.controller;
 
-import com.nexusforge.AquilaFramework.Dto.TableDetailsDto;
-import com.nexusforge.AquilaFramework.Entity.CreateTable;
-import com.nexusforge.AquilaFramework.Entity.Result;
-import com.nexusforge.AquilaFramework.Mgr.userTableMgr;
+import com.nexusforge.AquilaFramework.dto.TableDetailsDto;
+import com.nexusforge.AquilaFramework.entity.CreateTable;
+import com.nexusforge.AquilaFramework.entity.Result;
+import com.nexusforge.AquilaFramework.Mgr.UserTableMgr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +13,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/tableController")
-public class tableController {
+public class TableController {
 
     @Autowired
-    private userTableMgr userTableMgr;
+    private UserTableMgr userTableMgr;
 
     @PostMapping("/createTable")
     public Result createNewTable(@RequestBody CreateTable createTable) {

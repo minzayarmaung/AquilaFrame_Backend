@@ -1,10 +1,10 @@
 package com.nexusforge.AquilaFramework.Mgr;
 
-import com.nexusforge.AquilaFramework.Dao.userTableDao;
-import com.nexusforge.AquilaFramework.Dto.TableDetailsDto;
-import com.nexusforge.AquilaFramework.Entity.CreateTable;
-import com.nexusforge.AquilaFramework.Entity.Result;
-import com.nexusforge.AquilaFramework.Util.serverUtil;
+import com.nexusforge.AquilaFramework.dao.UserTableDao;
+import com.nexusforge.AquilaFramework.dto.TableDetailsDto;
+import com.nexusforge.AquilaFramework.entity.CreateTable;
+import com.nexusforge.AquilaFramework.entity.Result;
+import com.nexusforge.AquilaFramework.Util.ServerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -17,10 +17,10 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Service
-public class userTableMgr {
+public class UserTableMgr {
 
     @Autowired
-    private serverUtil serverUtil;
+    private ServerUtil serverUtil;
 
     @Autowired
     private DataSource dataSource;
@@ -29,7 +29,7 @@ public class userTableMgr {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private userTableDao userTableDao;
+    private UserTableDao userTableDao;
 
     public Result createNewTable(CreateTable requestData) {
         Result res = new Result();

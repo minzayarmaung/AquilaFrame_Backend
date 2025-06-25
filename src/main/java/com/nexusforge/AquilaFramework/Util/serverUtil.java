@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Component
-public class serverUtil {
+public class ServerUtil {
 
     public String loadTemplate(String path) throws IOException {
         ClassPathResource resource = new ClassPathResource(path);

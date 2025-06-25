@@ -1,4 +1,4 @@
-package com.nexusforge.AquilaFramework.Config;
+package com.nexusforge.AquilaFramework.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

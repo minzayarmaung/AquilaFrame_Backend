@@ -1,23 +1,21 @@
-package com.nexusforge.AquilaFramework.Controller;
+package com.nexusforge.AquilaFramework.controller;
 
-import com.nexusforge.AquilaFramework.Entity.Result;
-import com.nexusforge.AquilaFramework.Mgr.userAuthMgr;
+import com.nexusforge.AquilaFramework.entity.Result;
+import com.nexusforge.AquilaFramework.Mgr.UserAuthMgr;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/signupController")
-public class signupController {
+public class SignUpController {
 
     @Autowired
-    private userAuthMgr userAuthMgr;
+    private UserAuthMgr userAuthMgr;
 
     @PostMapping("/signup")
     public Result signUpController(@RequestBody Map<String , String> body){

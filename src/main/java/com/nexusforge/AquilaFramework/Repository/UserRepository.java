@@ -1,6 +1,6 @@
 package com.nexusforge.AquilaFramework.Repository;
 
-import com.nexusforge.AquilaFramework.Entity.User;
+import com.nexusforge.AquilaFramework.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
