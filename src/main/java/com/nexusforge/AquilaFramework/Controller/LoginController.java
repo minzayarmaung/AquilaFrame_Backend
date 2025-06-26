@@ -1,4 +1,4 @@
-package com.nexusforge.AquilaFramework.controller;
+package com.nexusforge.AquilaFramework.Controller;
 
 import com.nexusforge.AquilaFramework.entity.Result;
 import com.nexusforge.AquilaFramework.Mgr.UserAuthMgr;

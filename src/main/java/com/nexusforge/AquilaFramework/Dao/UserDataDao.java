@@ -5,6 +5,8 @@ import com.nexusforge.AquilaFramework.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,5 +24,15 @@ public class UserDataDao {
         }
 
         return userInfo;
+    }
+
+    public List<com.nexusforge.AquilaFramework.entity.User> getAllUserDataDao() {
+        List<User> result = new ArrayList<>();
+        List<User> users = userRepository.findAll();
+
+        for(int i=0; i<users.size(); i++){
+            result.add(users.get(i));
+        }
+        return result;
     }
 }

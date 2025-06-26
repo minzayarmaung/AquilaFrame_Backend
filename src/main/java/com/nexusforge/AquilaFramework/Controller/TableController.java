@@ -1,4 +1,4 @@
-package com.nexusforge.AquilaFramework.controller;
+package com.nexusforge.AquilaFramework.Controller;
 
 import com.nexusforge.AquilaFramework.dto.TableDetailsDto;
 import com.nexusforge.AquilaFramework.entity.CreateTable;
