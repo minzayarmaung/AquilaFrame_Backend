@@ -1,5 +1,7 @@
 package com.nexusforge.AquilaFramework.dao;
 
+import com.nexusforge.AquilaFramework.Util.DtoUtil;
+import com.nexusforge.AquilaFramework.dto.UserDTO;
 import com.nexusforge.AquilaFramework.entity.User;
 import com.nexusforge.AquilaFramework.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,9 @@ public class UserDataDao {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    DtoUtil dtoUtil;
 
     public User getUserDataByUserEmailDao(String email) {
         User userInfo = new User();
@@ -35,4 +40,17 @@ public class UserDataDao {
         }
         return result;
     }
+
+    public List<UserDTO> getSearchUserDataDao(String searchVal) {
+        List<User> users = userRepository.findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(searchVal, searchVal);
+        List<UserDTO> result = new ArrayList<>();
+
+        for (User user : users) {
+            UserDTO dto = dtoUtil.convertToDTO(user);
+            result.add(dto);
+        }
+
+        return result;
+    }
+
 }

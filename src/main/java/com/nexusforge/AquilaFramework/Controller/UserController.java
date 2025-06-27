@@ -1,5 +1,6 @@
 package com.nexusforge.AquilaFramework.Controller;
 
+import com.nexusforge.AquilaFramework.dto.UserDTO;
 import com.nexusforge.AquilaFramework.entity.User;
 import com.nexusforge.AquilaFramework.Mgr.UserDataMgr;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,10 @@ public class UserController {
     @GetMapping("/getAllUsers")
     public List<User> getAllUserData(){
         return userDataMgr.getAllUserDataMgr();
+    }
+
+    @GetMapping("/searchUser")
+    public List<UserDTO> searchUsers(@RequestParam String searchVal){
+        return userDataMgr.getSearchUserDataMgr(searchVal);
     }
 }
