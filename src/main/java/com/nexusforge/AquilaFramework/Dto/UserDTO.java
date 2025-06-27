@@ -1,6 +1,5 @@
-package com.nexusforge.AquilaFramework.dto;
+package com.nexusforge.AquilaFramework.Dto;
 
-import com.nexusforge.AquilaFramework.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 

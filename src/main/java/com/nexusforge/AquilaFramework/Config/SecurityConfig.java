@@ -1,4 +1,4 @@
-package com.nexusforge.AquilaFramework.config;
+package com.nexusforge.AquilaFramework.Config;
 
 import com.nexusforge.AquilaFramework.Util.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;

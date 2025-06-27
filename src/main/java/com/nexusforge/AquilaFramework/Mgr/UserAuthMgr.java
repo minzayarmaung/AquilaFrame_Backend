@@ -1,9 +1,9 @@
 package com.nexusforge.AquilaFramework.Mgr;
 
 import com.nexusforge.AquilaFramework.dao.UserAuthDao;
-import com.nexusforge.AquilaFramework.entity.PasswordResetToken;
-import com.nexusforge.AquilaFramework.entity.Result;
-import com.nexusforge.AquilaFramework.entity.User;
+import com.nexusforge.AquilaFramework.Entity.PasswordResetToken;
+import com.nexusforge.AquilaFramework.Entity.Result;
+import com.nexusforge.AquilaFramework.Entity.User;
 import com.nexusforge.AquilaFramework.Repository.PasswordResetTokenRepository;
 import com.nexusforge.AquilaFramework.Repository.UserRepository;
 import com.nexusforge.AquilaFramework.Service.UserDetailsService;

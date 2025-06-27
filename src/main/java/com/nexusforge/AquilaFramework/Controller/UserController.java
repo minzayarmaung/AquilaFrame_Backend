@@ -1,7 +1,7 @@
 package com.nexusforge.AquilaFramework.Controller;
 
-import com.nexusforge.AquilaFramework.dto.UserDTO;
-import com.nexusforge.AquilaFramework.entity.User;
+import com.nexusforge.AquilaFramework.Dto.UserDTO;
+import com.nexusforge.AquilaFramework.Entity.User;
 import com.nexusforge.AquilaFramework.Mgr.UserDataMgr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

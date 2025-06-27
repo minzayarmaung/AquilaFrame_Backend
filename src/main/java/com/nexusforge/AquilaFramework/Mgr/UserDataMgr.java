@@ -1,8 +1,8 @@
 package com.nexusforge.AquilaFramework.Mgr;
 
 import com.nexusforge.AquilaFramework.dao.UserDataDao;
-import com.nexusforge.AquilaFramework.dto.UserDTO;
-import com.nexusforge.AquilaFramework.entity.User;
+import com.nexusforge.AquilaFramework.Dto.UserDTO;
+import com.nexusforge.AquilaFramework.Entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class UserDataMgr {
         return userDataDao.getUserDataByUserEmailDao(email);
     }
 
-    public List<com.nexusforge.AquilaFramework.entity.User> getAllUserDataMgr() {
+    public List<com.nexusforge.AquilaFramework.Entity.User> getAllUserDataMgr() {
         return userDataDao.getAllUserDataDao();
     }
 

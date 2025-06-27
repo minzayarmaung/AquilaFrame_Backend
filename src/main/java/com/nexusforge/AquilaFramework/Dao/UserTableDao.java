@@ -1,9 +1,9 @@
 package com.nexusforge.AquilaFramework.dao;
 
-import com.nexusforge.AquilaFramework.dto.ColumnDto;
-import com.nexusforge.AquilaFramework.dto.TableDetailsDto;
-import com.nexusforge.AquilaFramework.entity.CreateTable;
-import com.nexusforge.AquilaFramework.entity.Result;
+import com.nexusforge.AquilaFramework.Dto.ColumnDto;
+import com.nexusforge.AquilaFramework.Dto.TableDetailsDto;
+import com.nexusforge.AquilaFramework.Entity.CreateTable;
+import com.nexusforge.AquilaFramework.Entity.Result;
 import com.nexusforge.AquilaFramework.Mgr.UserTableMgr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

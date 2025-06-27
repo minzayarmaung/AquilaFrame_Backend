@@ -1,6 +1,5 @@
 package com.nexusforge.AquilaFramework.Util;
 
-import com.nexusforge.AquilaFramework.entity.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

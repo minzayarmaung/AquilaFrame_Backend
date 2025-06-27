@@ -1,6 +1,6 @@
 package com.nexusforge.AquilaFramework.Service;
 
-import com.nexusforge.AquilaFramework.entity.User;
+import com.nexusforge.AquilaFramework.Entity.User;
 import com.nexusforge.AquilaFramework.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,7 +1,7 @@
 package com.nexusforge.AquilaFramework.Util;
 
-import com.nexusforge.AquilaFramework.dto.UserDTO;
-import com.nexusforge.AquilaFramework.entity.User;
+import com.nexusforge.AquilaFramework.Dto.UserDTO;
+import com.nexusforge.AquilaFramework.Entity.User;
 import org.springframework.stereotype.Component;
 
 @Component

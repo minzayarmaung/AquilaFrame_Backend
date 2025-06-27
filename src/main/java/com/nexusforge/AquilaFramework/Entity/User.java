@@ -1,4 +1,4 @@
-package com.nexusforge.AquilaFramework.entity;
+package com.nexusforge.AquilaFramework.Entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

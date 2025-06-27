@@ -1,8 +1,8 @@
 package com.nexusforge.AquilaFramework.dao;
 
 import com.nexusforge.AquilaFramework.Util.DtoUtil;
-import com.nexusforge.AquilaFramework.dto.UserDTO;
-import com.nexusforge.AquilaFramework.entity.User;
+import com.nexusforge.AquilaFramework.Dto.UserDTO;
+import com.nexusforge.AquilaFramework.Entity.User;
 import com.nexusforge.AquilaFramework.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class UserDataDao {
         return userInfo;
     }
 
-    public List<com.nexusforge.AquilaFramework.entity.User> getAllUserDataDao() {
+    public List<com.nexusforge.AquilaFramework.Entity.User> getAllUserDataDao() {
         List<User> result = new ArrayList<>();
         List<User> users = userRepository.findAll();
 

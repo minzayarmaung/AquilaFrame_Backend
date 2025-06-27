@@ -1,6 +1,6 @@
 package com.nexusforge.AquilaFramework.Controller;
 
-import com.nexusforge.AquilaFramework.entity.Result;
+import com.nexusforge.AquilaFramework.Entity.Result;
 import com.nexusforge.AquilaFramework.Mgr.UserAuthMgr;
 import com.nexusforge.AquilaFramework.Repository.PasswordResetTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;

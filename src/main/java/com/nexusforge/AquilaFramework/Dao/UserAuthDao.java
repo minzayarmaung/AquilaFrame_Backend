@@ -1,7 +1,7 @@
 package com.nexusforge.AquilaFramework.dao;
 
-import com.nexusforge.AquilaFramework.entity.Result;
-import com.nexusforge.AquilaFramework.entity.User;
+import com.nexusforge.AquilaFramework.Entity.Result;
+import com.nexusforge.AquilaFramework.Entity.User;
 import com.nexusforge.AquilaFramework.Repository.UserRepository;
 import com.nexusforge.AquilaFramework.Util.ServerUtil;
 import jakarta.mail.MessagingException;

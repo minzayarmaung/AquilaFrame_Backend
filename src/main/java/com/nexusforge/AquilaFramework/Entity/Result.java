@@ -1,4 +1,4 @@
-package com.nexusforge.AquilaFramework.entity;
+package com.nexusforge.AquilaFramework.Entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
