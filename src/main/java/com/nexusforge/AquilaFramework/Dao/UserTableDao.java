@@ -129,7 +129,7 @@ public class UserTableDao {
         return columnMetaMap;
     }
 
-    public Result buildAndExecuteAlterSQL(
+    public Result updateTableDao(
             String tableName,
             Set<String> existingCols,
             Map<String, UserTableMgr.ColumnMeta> existingMeta,
@@ -213,7 +213,7 @@ public class UserTableDao {
             res.setMsgCode("500");
             res.setMsgDesc("Failed to update table: " + e.getMessage());
         }
-
+        wsController.sendNotification("Table '" + tableName + "' updated successfully.");
         return res;
     }
 

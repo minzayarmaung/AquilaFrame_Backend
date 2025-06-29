@@ -1,6 +1,6 @@
 package com.nexusforge.AquilaFramework.Mgr;
 
-import com.nexusforge.AquilaFramework.dao.UserTableDao;
+import com.nexusforge.AquilaFramework.Dao.UserTableDao;
 import com.nexusforge.AquilaFramework.Dto.TableDetailsDto;
 import com.nexusforge.AquilaFramework.Entity.CreateTable;
 import com.nexusforge.AquilaFramework.Entity.Result;
@@ -129,7 +129,7 @@ public class UserTableMgr {
         Set<String> existingCols = new HashSet<>();
         Map<String, ColumnMeta> existingMeta = userTableDao.getExistingColumnsFromDB(tableName, existingCols);
 
-        return userTableDao.buildAndExecuteAlterSQL(tableName, existingCols, existingMeta, newColumns);
+        return userTableDao.updateTableDao(tableName, existingCols, existingMeta, newColumns);
     }
     public static class ColumnMeta {
         public String type;
