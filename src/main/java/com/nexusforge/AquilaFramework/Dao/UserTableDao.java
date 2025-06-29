@@ -1,5 +1,6 @@
-package com.nexusforge.AquilaFramework.dao;
+package com.nexusforge.AquilaFramework.Dao;
 
+import com.nexusforge.AquilaFramework.Controller.NotificationWebSocketController;
 import com.nexusforge.AquilaFramework.Dto.ColumnDto;
 import com.nexusforge.AquilaFramework.Dto.TableDetailsDto;
 import com.nexusforge.AquilaFramework.Entity.CreateTable;
@@ -20,6 +21,9 @@ public class UserTableDao {
     private DataSource dataSource;
 
     @Autowired
+    private NotificationWebSocketController wsController;
+
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     public Result createNewTableDao(String tableName, List<String> columnDefs, List<String> primaryKeys) {
@@ -38,6 +42,7 @@ public class UserTableDao {
             res.setState(true);
             res.setMsgDesc("Table Name : "+ tableName +"Created Successfully.");
             res.setMsgCode("200");
+            wsController.sendNotification("Table '" + tableName + "' created successfully.");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }finally {
