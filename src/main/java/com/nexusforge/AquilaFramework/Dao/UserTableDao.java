@@ -213,7 +213,7 @@ public class UserTableDao {
             res.setMsgCode("500");
             res.setMsgDesc("Failed to update table: " + e.getMessage());
         }
-        wsController.sendNotification("Table '" + tableName + "' updated successfully.");
+        wsController.sendNotification("Table '" + tableName + "' Updated successfully.");
         return res;
     }
 
